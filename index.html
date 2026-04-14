@@ -170,8 +170,8 @@ function initGame(){
   logEntries=[];renderLog();
   winActive=false;
   serving=Math.random()<0.5?'player':'ai';
-  player={x:d.mx+d.cw/2,y:d.kitPTop+(d.h-d.my-d.kitPTop)*0.45,w:PW(),h:PH(),minY:d.kitPTop,maxY:d.h-d.my-PH()};
-  ai={x:d.mx+d.cw/2,y:d.my+d.kitH*0.5,w:PW(),h:PH(),minY:d.my,maxY:d.kitAiBot-PH()};
+  player={x:d.mx+d.cw/2,y:d.kitPTop,w:PW(),h:PH(),minY:d.kitPTop,maxY:d.h-d.my-PH()};
+  ai={x:d.mx+d.cw/2,y:d.kitAiBot-PH(),w:PW(),h:PH(),minY:d.my,maxY:d.kitAiBot-PH()};
   particles=[];resetBall();state='serve';updateUI();
 }
 
@@ -328,7 +328,7 @@ function update(){
   const aiHw=ai.w/2;
   const aiTgtX=ball.x+(Math.random()-0.5)*W()*cfg.aiErr;
   ai.x+=(Math.max(d.mx+aiHw,Math.min(d.mx+d.cw-aiHw,aiTgtX))-ai.x)*cfg.aiSpd*1.5;
-  const aiTgtY=ball.vy<0?ball.y-ai.h*2:d.my+d.kitH*0.4;
+  const aiTgtY=ball.vy<0?ball.y-ai.h*2:d.kitAiBot-ai.h;
   ai.y+=(Math.max(ai.minY,Math.min(ai.maxY,aiTgtY))-ai.y)*cfg.aiSpd;
   ball.vx*=(1-cfg.drag);ball.vy*=(1-cfg.drag);
   ball.trail=ball.trail||[];ball.trail.push({x:ball.x,y:ball.y});if(ball.trail.length>8)ball.trail.shift();
