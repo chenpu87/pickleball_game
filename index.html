@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Pickleball × SUPACAZ</title> v7
+<title>Pickleball × SUPACAZ</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html{height:100%}
@@ -104,7 +104,7 @@ select option{background:#222}
     </table>
   </div>
 </div>
-<div id="controls-hint">手機：滑動控制球拍 · 點擊發球 / SMASH</div>
+<div id="controls-hint">手機：滑動控制球拍前後左右 · 點擊發球 · 擊球後快速點兩下 = SMASH</div>
 </div>
 
 <script>
@@ -266,12 +266,54 @@ cv.addEventListener('mousemove',e=>{
   mousePos.x=(e.clientX-r.left)*(W()/r.width);
   mousePos.y=(e.clientY-r.top)*(H()/r.height);
 });
+
+// Touch: drag to move paddle in X and Y
+let touchStartY=null, touchStartX=null, touchLastY=null, touchLastX=null;
+let lastTapTime=0, doubleTapArmed=false;
+
+cv.addEventListener('touchstart',e=>{
+  e.preventDefault();
+  const r=cv.getBoundingClientRect();
+  const tx=(e.touches[0].clientX-r.left)*(W()/r.width);
+  const ty=(e.touches[0].clientY-r.top)*(H()/r.height);
+  touchStartX=tx; touchStartY=ty;
+  touchLastX=tx;  touchLastY=ty;
+  mousePos.x=tx;  mousePos.y=ty;
+
+  if(state==='gameover'){startGame();return;}
+  if(state==='serve'&&serving==='player'){doServe();return;}
+  if(state==='idle'){startGame();return;}
+
+  // Double-tap detection for SMASH
+  const now=Date.now();
+  if(now-lastTapTime<320&&smashWindow>0&&state==='rally'){
+    doSmash(tx,ty);
+    doubleTapArmed=false;
+  } else {
+    doubleTapArmed=true;
+  }
+  lastTapTime=now;
+},{passive:false});
+
 cv.addEventListener('touchmove',e=>{
   e.preventDefault();
   const r=cv.getBoundingClientRect();
-  mousePos.x=(e.touches[0].clientX-r.left)*(W()/r.width);
-  mousePos.y=(e.touches[0].clientY-r.top)*(H()/r.height);
+  const tx=(e.touches[0].clientX-r.left)*(W()/r.width);
+  const ty=(e.touches[0].clientY-r.top)*(H()/r.height);
+  mousePos.x=tx; mousePos.y=ty;
+  // Delta-based Y movement for paddle
+  if(touchLastY!==null){
+    const dy=ty-touchLastY;
+    const d=dm();
+    player.y=Math.max(player.minY,Math.min(player.maxY-player.h,player.y+dy));
+  }
+  touchLastX=tx; touchLastY=ty;
 },{passive:false});
+
+cv.addEventListener('touchend',()=>{
+  touchLastY=null; touchLastX=null;
+});
+
 cv.addEventListener('click',e=>{
   const r=cv.getBoundingClientRect();
   const cx=(e.clientX-r.left)*(W()/r.width),cy=(e.clientY-r.top)*(H()/r.height);
@@ -280,14 +322,6 @@ cv.addEventListener('click',e=>{
   if(state==='idle'){startGame();return;}
   if(smashWindow>0&&state==='rally')doSmash(cx,cy);
 });
-cv.addEventListener('touchstart',e=>{
-  if(state==='gameover'){startGame();return;}
-  if(state==='serve'&&serving==='player'){doServe();return;}
-  if(smashWindow>0&&state==='rally'){
-    const r=cv.getBoundingClientRect();
-    doSmash((e.touches[0].clientX-r.left)*(W()/r.width),(e.touches[0].clientY-r.top)*(H()/r.height));
-  }
-},{passive:true});
 
 function doSmash(cx,cy){
   const dx=cx-ball.x,dy=cy-ball.y,dist=Math.sqrt(dx*dx+dy*dy)||1;
@@ -389,6 +423,7 @@ function movePlayer(d,spd){
   if((keys['ArrowRight']||keys['KeyD'])&&player.x+hw<d.mx+d.cw)player.x+=spd;
   if((keys['ArrowUp']||keys['KeyW'])&&player.y>player.minY){player.y-=spd*0.75;if(player.y<player.minY)player.y=player.minY;}
   if((keys['ArrowDown']||keys['KeyS'])&&player.y+player.h<player.maxY){player.y+=spd*0.75;if(player.y+player.h>player.maxY)player.y=player.maxY-player.h;}
+  // Mouse: follow X axis only
   if(mousePos.x){const tx=Math.max(d.mx+hw,Math.min(d.mx+d.cw-hw,mousePos.x));player.x+=(tx-player.x)*0.22;}
 }
 
