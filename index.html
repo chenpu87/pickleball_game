@@ -15,11 +15,12 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   padding:0;overflow-x:hidden;
 }
-#app{width:100%;max-width:900px;padding:12px 12px 20px;display:flex;flex-direction:column;gap:8px}
+#app{width:100%;max-width:900px;padding:12px 12px 20px;display:flex;flex-direction:column;gap:8px;align-items:center;}
 #scoreboard{
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;
   padding:12px 20px;background:#1e1e2e;
   border:1px solid rgba(255,255,255,0.1);border-radius:14px;
+  width:100%;
 }
 .side-label{font-size:11px;color:#888;font-weight:500;letter-spacing:.04em}
 .pts{font-size:34px;font-weight:600;color:#fff;line-height:1}
@@ -32,14 +33,14 @@ body{
 .svtag{font-size:10px;background:#FAC775;color:#412402;padding:1px 7px;border-radius:4px;display:inline-block}
 .smashtag{font-size:10px;background:#EF4444;color:#fff;padding:1px 7px;border-radius:4px;display:inline-block;animation:blink .3s infinite alternate}
 @keyframes blink{from{opacity:1}to{opacity:.1}}
-#cw{position:relative;width:100%;display:flex;justify-content:center;align-items:center;gap:12px;}
+#cw{position:relative;width:100%;display:flex;justify-content:center;align-items:center;gap:8px;}
 #side-left,#side-right{
-  flex:0 0 70px;display:flex;align-items:center;justify-content:center;
-  min-height:200px;padding:8px 4px;
+  flex:0 0 65px;display:flex;align-items:center;justify-content:center;
+  min-height:200px;padding:8px 2px;
 }
 #side-left .graffiti{
   font-family:'Permanent Marker',cursive;
-  font-size:clamp(18px,3.5vw,30px);
+  font-size:clamp(18px,3.5vw,28px);
   color:#FFCD00;
   text-shadow:2px 2px 0 #c0312b, 0 0 14px rgba(255,200,0,0.6);
   line-height:1.6;
@@ -48,19 +49,19 @@ body{
 }
 #side-right .graffiti{
   font-family:'Pacifico',cursive;
-  font-size:clamp(18px,3.5vw,30px);
+  font-size:clamp(13px,2.2vw,20px);
   color:#00d4ff;
   text-shadow:2px 2px 0 #0d4a7a, 0 0 14px rgba(0,200,255,0.6);
   line-height:1.6;
   text-align:center;
   white-space:nowrap;
 }
-canvas{display:block;width:auto;max-width:100%;touch-action:none;cursor:crosshair;}
+canvas{display:block;touch-action:none;cursor:crosshair;}
 #cbar{
   display:flex;align-items:center;gap:10px;padding:9px 14px;
   background:#1e1e2e;border:1px solid rgba(255,255,255,0.1);
-  border-radius:14px;border-top:1px solid rgba(255,255,255,0.1);flex-wrap:wrap;
-  margin-top:20mm;
+  border-radius:14px;flex-wrap:wrap;
+  margin-top:20mm;width:100%;
 }
 button{font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.22);background:rgba(255,255,255,0.09);color:#fff;cursor:pointer;white-space:nowrap}
 button:hover{background:rgba(255,255,255,0.16)}
@@ -70,7 +71,7 @@ select option{background:#222}
 #tip{font-size:11px;color:#555;margin-left:auto;text-align:right}
 
 /* Log table */
-#logw{padding:10px 14px;background:#161626;border-radius:10px;border:1px solid rgba(255,255,255,0.07)}
+#logw{padding:10px 14px;background:#161626;border-radius:10px;border:1px solid rgba(255,255,255,0.07);width:100%;}
 #logtitle{font-size:11px;font-weight:500;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
 #log-table-wrap{overflow-x:auto}
 #log-table{width:100%;border-collapse:collapse;font-size:12px}
@@ -121,7 +122,7 @@ select option{background:#222}
     <option value="med" selected>普通</option>
     <option value="hard">困難</option>
   </select>
-  <span id="tip">電腦：鍵盤按 "W" 前進到Kitchen 按"S“往後，用滑鼠左右移動 · 擊球後點擊 SMASH · 5分1局 · 2局勝</span>
+  <span id="tip">電腦：鍵盤按 "W" 前進到Kitchen 按"A“往後，用滑鼠左右移動 · 擊球後點擊 SMASH · 5分1局 · 2局勝</span>
 </div>
 <div id="logw">
   <div id="logtitle">得分紀錄</div>
@@ -143,10 +144,10 @@ const ASPECT=20/44;
 const WIN_PTS=5, WIN_SETS=2;
 
 function resize(){
-  const avail=Math.min(window.innerWidth,900)-24;
-  // For portrait court, limit width so it doesn't get too wide on desktop
-  const maxCourtW=Math.min(avail, window.innerHeight*0.6*(20/44));
-  cv.width=Math.max(maxCourtW,200);
+  const sidePanels=65*2+8*2; // two 65px panels + gaps
+  const avail=Math.min(window.innerWidth,900)-24-sidePanels;
+  const maxCourtW=Math.min(avail, window.innerHeight*0.62*(20/44));
+  cv.width=Math.max(maxCourtW,160)+30; // +30mm wider court
   cv.height=Math.round(cv.width/ASPECT);
 }
 resize();
@@ -459,8 +460,8 @@ function movePlayer(d,spd){
   const hw=player.w/2;
   if((keys['ArrowLeft']||keys['KeyA'])&&player.x-hw>d.mx)player.x-=spd;
   if((keys['ArrowRight']||keys['KeyD'])&&player.x+hw<d.mx+d.cw)player.x+=spd;
-  if((keys['ArrowUp']||keys['KeyW'])&&player.y>player.minY){player.y-=spd*1.6;if(player.y<player.minY)player.y=player.minY;}
-  if((keys['ArrowDown']||keys['KeyS'])&&player.y+player.h<player.maxY){player.y+=spd*1.6;if(player.y+player.h>player.maxY)player.y=player.maxY-player.h;}
+  if((keys['ArrowUp']||keys['KeyW'])&&player.y>player.minY){player.y-=spd*1.4;if(player.y<player.minY)player.y=player.minY;}
+  if((keys['ArrowDown']||keys['KeyS'])&&player.y+player.h<player.maxY){player.y+=spd*1.4;if(player.y+player.h>player.maxY)player.y=player.maxY-player.h;}
   // Mouse: follow X axis only
   if(mousePos.x){const tx=Math.max(d.mx+hw,Math.min(d.mx+d.cw-hw,mousePos.x));player.x+=(tx-player.x)*0.22;}
 }
