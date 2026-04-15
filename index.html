@@ -96,7 +96,7 @@ select option{background:#222}
 <div id="app">
 <div id="scoreboard">
   <div class="side">
-    <div class="side-label">電腦 AI</div>
+    <div class="side-label" data-i18n="ai-label">電腦 AI</div>
     <div class="pts" id="ai-pts">0</div>
     <div class="games-row" id="ai-games"></div>
   </div>
@@ -105,7 +105,7 @@ select option{background:#222}
     <div id="sbadge"></div>
   </div>
   <div class="side" style="text-align:right;align-items:flex-end;display:flex;flex-direction:column">
-    <div class="side-label">你</div>
+    <div class="side-label" data-i18n="you-label">你</div>
     <div class="pts" id="p-pts">0</div>
     <div class="games-row" id="p-games" style="justify-content:flex-end"></div>
   </div>
@@ -116,27 +116,76 @@ select option{background:#222}
   <div id="side-right"><span class="graffiti">VOLLEY !!</span></div>
 </div>
 <div id="cbar">
-  <button id="btnstart">開始 / 重來</button>
+  <button id="btnstart" data-i18n="start">開始 / 重來</button>
   <select id="diffsel">
-    <option value="easy">簡單</option>
-    <option value="med" selected>普通</option>
-    <option value="hard">困難</option>
+    <option value="easy" data-i18n="easy">簡單</option>
+    <option value="med" selected data-i18n="med">普通</option>
+    <option value="hard" data-i18n="hard">困難</option>
   </select>
-  <span id="tip">電腦：鍵盤按 "W" 前進到Kitchen 按"A“往後，用滑鼠左右移動 · 擊球後點擊 SMASH · 5分1局 · 2局勝</span>
+  <button id="btnlang" style="margin-left:auto;background:rgba(255,200,0,0.15);border-color:rgba(255,200,0,0.5);color:#FFCD00;font-weight:700;letter-spacing:0.05em;">🌐 EN</button>
+  <span id="tip" data-i18n="tip">電腦：鍵盤按 "W" 前進到Kitchen 按"S"往後，用滑鼠左右移動 · 擊球後點擊 SMASH · 5分1局 · 2局勝</span>
 </div>
 <div id="logw">
-  <div id="logtitle">得分紀錄</div>
+  <div id="logtitle" data-i18n="logtitle">得分紀錄</div>
   <div id="log-table-wrap">
     <table id="log-table">
-      <thead><tr><th>#</th><th>得分</th><th>局</th><th>原因</th><th>你</th><th>AI</th></tr></thead>
+      <thead><tr><th>#</th><th id="th-score" data-i18n="th-score">得分</th><th id="th-set" data-i18n="th-set">局</th><th id="th-reason" data-i18n="th-reason">原因</th><th id="th-you" data-i18n="th-you">你</th><th>AI</th></tr></thead>
       <tbody id="log-body"></tbody>
     </table>
   </div>
 </div>
-<div id="controls-hint">手機：滑動控制球拍前後左右 · 點擊發球 · 擊球後快速點兩下 = SMASH</div>
+<div id="controls-hint" data-i18n="hint">手機：滑動控制球拍前後左右 · 點擊發球 · 擊球後快速點兩下 = SMASH</div>
+</div>
 </div>
 
 <script>
+
+let lang='zh';
+const i18n={
+  zh:{
+    'start':'開始 / 重來',
+    'easy':'簡單','med':'普通','hard':'困難',
+    'tip':'電腦：鍵盤按 "W" 前進到Kitchen 按"S"往後，用滑鼠左右移動 · 擊球後點擊 SMASH · 5分1局 · 2局勝',
+    'hint':'手機：滑動控制球拍前後左右 · 點擊發球 · 擊球後快速點兩下 = SMASH',
+    'logtitle':'得分紀錄',
+    'th-score':'得分','th-set':'局','th-reason':'原因','th-you':'你',
+    'ai-label':'電腦 AI','you-label':'你',
+    'idle-msg':'按空白鍵開始',
+    'serve-player':'空白鍵 / 點擊 發球','serve-ai':'AI 發球中...',
+    'smash-hint':'擊球後點擊可 SMASH!',
+    'win-you':'你贏了整場！','win-ai':'AI贏了整場',
+    'set-win-you':'你贏得這局！','set-win-ai':'AI贏得這局',
+    'you-serve':'你發球','ai-serve':'AI發球','set-label':'局',
+    'net-you':'你打到網','net-ai':'AI打到網',
+    'floor-ai':'落地底線失分','floor-you':'AI底線失分',
+    'out-you':'出界','out-ai':'AI出界',
+    'change-serve':'換發球 — ',
+    'btnlang':'🌐 EN'
+  },
+  en:{
+    'start':'Start / Restart',
+    'easy':'Easy','med':'Normal','hard':'Hard',
+    'tip':'PC: Press "W" to move forward to Kitchen, "S" to move back · Mouse left/right · After hit, click to SMASH · 5pts/set · Best of 2',
+    'hint':'Mobile: Swipe to move paddle · Tap to serve · Double-tap after hit = SMASH',
+    'logtitle':'Score Log',
+    'th-score':'Point','th-set':'Set','th-reason':'Reason','th-you':'You',
+    'ai-label':'Computer AI','you-label':'You',
+    'idle-msg':'Press Space to Start',
+    'serve-player':'Space / Tap to Serve','serve-ai':'AI Serving...',
+    'smash-hint':'Tap now to SMASH!',
+    'win-you':'You Win the Match!','win-ai':'AI Wins the Match',
+    'set-win-you':'You won this set!','set-win-ai':'AI won this set',
+    'you-serve':'Your Serve','ai-serve':'AI Serve','set-label':'Set',
+    'net-you':'You hit the net','net-ai':'AI hit the net',
+    'floor-ai':'Ball out — baseline','floor-you':'AI ball out — baseline',
+    'out-you':'Out of bounds','out-ai':'AI out of bounds',
+    'change-serve':'Side out — ',
+    'btnlang':'🌐 中文'
+  }
+};
+
+function t(key){return i18n[lang][key]||key;}
+
 const cv=document.getElementById('gc');
 const ct=cv.getContext('2d');
 const cwrap=document.getElementById('cw');
@@ -215,7 +264,7 @@ function resetBall(){
   smashWindow=0;
 }
 
-function setMsg(t){document.getElementById('smsg').textContent=t;}
+function setMsg(msg){document.getElementById('smsg').textContent=msg;}
 function setBadge(t){document.getElementById('sbadge').innerHTML=t;}
 
 function updateUI(){
@@ -226,7 +275,7 @@ function updateUI(){
     const n=who==='p'?pSets:aiSets;
     for(let i=0;i<WIN_SETS;i++){const d2=document.createElement('div');d2.className='gdot'+(i<n?' won':'');el.appendChild(d2);}
   });
-  if(!winActive)setBadge(`<span class="svtag">${serving==='player'?'你發球':'AI發球'} · 局${setNum}</span>`);
+  if(!winActive)setBadge(`<span class="svtag">${serving==='player'?t('you-serve'):t('ai-serve')} · ${t('set-label')}${setNum}</span>`);
 }
 
 function renderLog(){
@@ -235,7 +284,7 @@ function renderLog(){
   for(let i=0;i<logEntries.length;i++){
     const e=logEntries[i];
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${logEntries.length-i}</td><td class="${e.who==='player'?'pt-you':'pt-ai'}">${e.who==='player'?'你':'AI'}</td><td>${e.set}</td><td>${e.reason}</td><td class="pt-you">${e.pScore}</td><td class="pt-ai">${e.aiScore}</td>`;
+    tr.innerHTML=`<td>${logEntries.length-i}</td><td class="${e.who==='player'?'pt-you':'pt-ai'}">${e.who==='player'?t('th-you'):'AI'}</td><td>${e.set}</td><td>${e.reason}</td><td class="pt-you">${e.pScore}</td><td class="pt-ai">${e.aiScore}</td>`;
     tbody.appendChild(tr);
   }
   const w=document.getElementById('log-table-wrap');
@@ -257,19 +306,19 @@ function awardPt(winner,reason){
   }else{
     // 非發球方贏這球 → 換發球，不得分
     serving=winner;
-    addLog(winner,'換發球 — '+reason);
+    addLog(winner,t('change-serve')+reason);
   }
   updateUI();
   if(pScore>=WIN_PTS&&pScore-aiScore>=2){
     pSets++;pScore=0;aiScore=0;setNum++;
     if(pSets>=WIN_SETS){triggerWin('player');return;}
-    setMsg('你贏得這局！');state='between';updateUI();
+    setMsg(t('set-win-you'));state='between';updateUI();
     setTimeout(()=>{resetBall();state='serve';updateUI();},1600);return;
   }
   if(aiScore>=WIN_PTS&&aiScore-pScore>=2){
     aiSets++;pScore=0;aiScore=0;setNum++;
     if(aiSets>=WIN_SETS){triggerWin('ai');return;}
-    setMsg('AI贏得這局');state='between';updateUI();
+    setMsg(t('set-win-ai'));state='between';updateUI();
     setTimeout(()=>{resetBall();state='serve';updateUI();},1600);return;
   }
   state='pause';smashWindow=0;
@@ -279,7 +328,7 @@ function awardPt(winner,reason){
 function triggerWin(who){
   winWho=who;winActive=true;winAnim=0;state='gameover';
   spawnConfetti(100);
-  if(who==='player')setMsg('你贏了整場！');else setMsg('AI贏了整場');
+  if(who==='player')setMsg(t('win-you'));else setMsg(t('win-ai'));
   updateUI();
 }
 
@@ -377,7 +426,7 @@ function startGame(){if(animId)cancelAnimationFrame(animId);running=true;initGam
 function loop(){if(!running)return;update();draw();animId=requestAnimationFrame(loop);}
 
 function update(){
-  const d=dm(),cfg=diffCfg(),pspd=W()*0.007;
+  const d=dm(),cfg=diffCfg(),pspd=H()*0.012;
   if(smashWindow>0)smashWindow--;
   if(winActive)winAnim++;
   for(let i=particles.length-1;i>=0;i--){
@@ -387,8 +436,8 @@ function update(){
   }
   if(state==='gameover'){movePlayer(d,pspd);return;}
   if(state==='serve'){
-    if(serving==='player'){ball.x=player.x;ball.y=player.y-ball.r*3;setMsg('空白鍵 / 點擊 發球');}
-    else{ball.x=ai.x;ball.y=ai.y+ball.r*3;setMsg('AI 發球中...');
+    if(serving==='player'){ball.x=player.x;ball.y=player.y-ball.r*3;setMsg(t('serve-player'));}
+    else{ball.x=ai.x;ball.y=ai.y+ball.r*3;setMsg(t('serve-ai'));
       setTimeout(()=>{if(state==='serve'&&serving==='ai')doServe();},900);}
     movePlayer(d,pspd);return;
   }
@@ -415,11 +464,11 @@ function checkNet(d){
   // 球打到網 → 打球方失誤，對方得分（若對方是發球方才得分，否則換發球）
   if(ball.vy>0&&ball.lastHit==='player'
      &&ball.y+ball.r>=d.netY&&ball.y-ball.r<d.netY+6){
-    awardPt('ai','你打到網');
+    awardPt('ai',t('net-you'));
   }
   if(ball.vy<0&&ball.lastHit==='ai'
      &&ball.y-ball.r<=d.netY&&ball.y+ball.r>d.netY-6){
-    awardPt('player','AI打到網');
+    awardPt('player',t('net-ai'));
   }
 }
 function checkHit(d,paddle,isPlayer){
@@ -436,7 +485,7 @@ function checkHit(d,paddle,isPlayer){
   if(isPlayer){
     ball.vy=-Math.abs(es*Math.cos(Math.abs(ang)*0.6));ball.vx=es*Math.sin(ang);
     ball.y=paddle.y-ball.r-1;ball.lastHit='player';smashWindow=24;
-    setBadge('<span style="font-size:10px;color:#FFCD00;font-weight:600">擊球後點擊可 SMASH!</span>');
+    setBadge(`<span style="font-size:10px;color:#FFCD00;font-weight:600">${t('smash-hint')}</span>`);
   }else{
     ball.vy=Math.abs(es*Math.cos(Math.abs(ang)*0.6));ball.vx=es*Math.sin(ang);
     ball.y=paddle.y+ph+ball.r+1;ball.lastHit='ai';smashWindow=0;
@@ -446,15 +495,15 @@ function checkHit(d,paddle,isPlayer){
 function checkFloor(d){
   // 球碰到你方底線 → AI得分（你沒接到）
   if(ball.vy>0&&ball.y+ball.r>=d.h-d.my){
-    awardPt('ai','落地底線失分');return;
+    awardPt('ai',t('floor-ai'));return;
   }
   // 球碰到AI方底線 → 你得分（AI沒接到）
   if(ball.vy<0&&ball.y-ball.r<=d.my){
-    awardPt('player','AI底線失分');return;
+    awardPt('player',t('floor-you'));return;
   }
   // 球飛出畫面外（保險）
-  if(ball.y-ball.r>H()+40){awardPt('ai','出界');return;}
-  if(ball.y+ball.r<-40){awardPt('player','AI出界');return;}
+  if(ball.y-ball.r>H()+40){awardPt('ai',t('out-you'));return;}
+  if(ball.y+ball.r<-40){awardPt('player',t('out-ai'));return;}
 }
 function movePlayer(d,spd){
   const hw=player.w/2;
@@ -685,6 +734,34 @@ function drawBall(bx,by,br){
 }
 
 draw();updateUI();
+
+/* ========== i18n LANGUAGE TOGGLE ========== */
+
+function applyLang(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    el.textContent=t(key);
+  });
+  document.getElementById('btnlang').textContent=t('btnlang');
+  // Always update smsg based on current game state
+  if(state==='idle'||!running)setMsg(t('idle-msg'));
+  else if(state==='serve'){
+    if(serving==='player')setMsg(t('serve-player'));
+    else setMsg(t('serve-ai'));
+  }
+  // Re-render log to update You/AI labels
+  renderLog();
+  // Re-run updateUI to refresh serving badge
+  updateUI();
+}
+
+document.getElementById('btnlang').addEventListener('click',()=>{
+  lang=lang==='zh'?'en':'zh';
+  applyLang();
+});
+
+// Patch dynamic strings to use i18n
+
 </script>
 </body>
 </html>
